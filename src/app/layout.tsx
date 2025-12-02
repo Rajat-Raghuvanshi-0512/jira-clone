@@ -1,0 +1,36 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+
+import { cn } from "@/lib/utils";
+
+import "./globals.css";
+
+const font = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Jira Clone",
+  description: "Jira Clone built with Next.js",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={cn(
+          font.className,
+          font.variable,
+          "antialiased min-h-screen"
+        )}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
