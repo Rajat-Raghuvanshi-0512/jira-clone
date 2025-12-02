@@ -1,18 +1,19 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
+import { QueryProvider } from '@/components/query-provider';
 
-import "./globals.css";
+import './globals.css';
 
 const font = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Jira Clone",
-  description: "Jira Clone built with Next.js",
+  title: 'Jira Clone',
+  description: 'Jira Clone built with Next.js',
 };
 
 export default function RootLayout({
@@ -26,10 +27,10 @@ export default function RootLayout({
         className={cn(
           font.className,
           font.variable,
-          "antialiased min-h-screen"
+          'antialiased min-h-screen'
         )}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

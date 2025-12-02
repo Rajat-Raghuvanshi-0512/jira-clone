@@ -1,36 +1,30 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-
-const formSchema = z.object({
-  email: z.email().trim().min(1, { message: "Email is required" }),
-  password: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" })
-    .max(20, { message: "Password must be at most 20 characters" }),
-});
+} from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { signInSchema } from '../schema';
+import { useLogin } from '../api/use-login';
 
 const SignInForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const { mutate: login, isPending } = useLogin();
+  const onSubmit = (data: z.infer<typeof signInSchema>) => {
+    login({ json: data });
   };
   return (
     <Form {...form}>
@@ -69,7 +63,7 @@ const SignInForm = () => {
         />
         <Button
           type="submit"
-          disabled={form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting || isPending}
           size="lg"
           className="w-full"
         >
