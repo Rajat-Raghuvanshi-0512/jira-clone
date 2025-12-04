@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { createWorkspaceSchema } from "../schema";
+import { createWorkspaceSchema, updateWorkspaceSchema } from "../schema";
 import {
   MEMBER_ID,
   DATABASE_ID,
@@ -9,6 +9,7 @@ import {
 } from "@/config";
 import { ID, Query } from "node-appwrite";
 import { generateInviteCode } from "@/lib/utils";
+import { getMember } from "@/features/members/utils";
 import { MemberRole } from "@/features/members/types";
 import { sessionMiddleware } from "@/lib/session-middleware";
 
@@ -59,6 +60,8 @@ const app = new Hono()
         uploadedImageUrl = `data:image/png;base64,${Buffer.from(
           fileBuffer
         ).toString("base64")}`;
+      } else {
+        uploadedImageUrl = image;
       }
 
       const workspace = await databases.createDocument({
@@ -84,6 +87,63 @@ const app = new Hono()
         },
       });
 
+      return c.json({ data: workspace });
+    }
+  )
+  .patch(
+    "/:workspaceId",
+    sessionMiddleware,
+    zValidator("form", updateWorkspaceSchema),
+    sessionMiddleware,
+    async (c) => {
+      const databases = c.get("databases");
+      const user = c.get("user");
+      const storage = c.get("storage");
+
+      const { workspaceId } = c.req.param();
+      const { name, image } = c.req.valid("form");
+
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+      if (!member) {
+        return c.json({ error: "Member not found" }, 404);
+      }
+      if (member.role !== MemberRole.ADMIN) {
+        return c.json(
+          { error: "You are not authorized to update this workspace" },
+          403
+        );
+      }
+      let uploadedImageUrl: string | undefined;
+      if (image && image instanceof File) {
+        const file = await storage.createFile(
+          IMAGE_BUCKET_ID,
+          ID.unique(),
+          image
+        );
+        const fileBuffer = await storage.getFileDownload(
+          IMAGE_BUCKET_ID,
+          file.$id
+        );
+
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          fileBuffer
+        ).toString("base64")}`;
+      } else {
+        uploadedImageUrl = image;
+      }
+      const workspace = await databases.updateDocument(
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+        {
+          name,
+          image: uploadedImageUrl,
+        }
+      );
       return c.json({ data: workspace });
     }
   );

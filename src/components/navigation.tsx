@@ -9,11 +9,12 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
 const routes = [
   {
     label: "Home",
-    href: "/",
+    href: "",
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
@@ -39,14 +40,16 @@ const routes = [
 
 export const Navigation = () => {
   const pathname = usePathname();
+  const workspaceId = useWorkspaceId();
   return (
     <ul className="flex flex-col gap-2">
       {routes.map((route) => {
-        const isActive = pathname === route.href;
+        const fullHref = `/workspaces/${workspaceId}${route.href}`;
+        const isActive = pathname === fullHref;
         const Icon = isActive ? route.activeIcon : route.icon;
         return (
           <li key={route.href}>
-            <Link href={route.href}>
+            <Link href={fullHref}>
               <div
                 className={cn(
                   "flex items-center gap-2.5 p-2.5 rounded-md transition-all duration-300 font-medium hover:text-primary text-neutral-500",
