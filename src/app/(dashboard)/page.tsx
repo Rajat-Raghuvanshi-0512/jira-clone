@@ -1,6 +1,8 @@
-import { getCurrentUser } from "@/features/auth/actions";
+import { getCurrentUser } from "@/features/auth/queries";
 import { redirect } from "next/navigation";
-import { getWorkspaces } from "@/features/workspaces/actions";
+import { getWorkspaces } from "@/features/workspaces/queries";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const user = await getCurrentUser();

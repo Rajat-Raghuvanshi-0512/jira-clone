@@ -1,25 +1,14 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { Account, Client, Databases, Query } from "node-appwrite";
-import { AUTH_COOKIE_NAME } from "@/features/auth/constants";
+import { Query } from "node-appwrite";
 import { DATABASE_ID, MEMBER_ID, WORKSPACE_ID } from "@/config";
 import { getMember } from "../members/utils";
 import { Workspace } from "./types";
+import { createSessionClient } from "@/lib/appwrite";
 
 export const getWorkspaces = async () => {
   try {
-    const client = new Client();
-    client.setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!);
-    client.setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_KEY!);
-    const cookieStore = await cookies();
-    const session = cookieStore.get(AUTH_COOKIE_NAME);
-    if (!session) {
-      return { documents: [], total: 0 };
-    }
-    client.setSession(session.value);
-    const databases = new Databases(client);
-    const account = new Account(client);
+    const { databases, account } = await createSessionClient();
     const user = await account.get();
     const members = await databases.listDocuments({
       databaseId: DATABASE_ID,
@@ -37,26 +26,15 @@ export const getWorkspaces = async () => {
       queries: [Query.contains("$id", workspaceIds), Query.orderAsc("name")],
     });
     return workspaces;
-  } catch (error) {
-    console.error(error);
+  } catch {
     return { documents: [], total: 0 };
   }
 };
 
 export const getWorkspace = async (workspaceId: string) => {
   try {
-    const client = new Client();
-    client.setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!);
-    client.setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_KEY!);
-    const cookieStore = await cookies();
-    const session = cookieStore.get(AUTH_COOKIE_NAME);
-    if (!session) {
-      return null;
-    }
-    client.setSession(session.value);
-    const account = new Account(client);
+    const { databases, account } = await createSessionClient();
     const user = await account.get();
-    const databases = new Databases(client);
     const member = await getMember({
       databases,
       workspaceId,
@@ -71,8 +49,7 @@ export const getWorkspace = async (workspaceId: string) => {
       workspaceId
     );
     return workspace;
-  } catch (error) {
-    console.error(error);
+  } catch {
     return null;
   }
 };
