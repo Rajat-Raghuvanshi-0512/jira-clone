@@ -7,6 +7,8 @@ import { generateInviteCode } from '@/lib/utils'
 import { getMember } from '@/features/members/utils'
 import { MemberRole } from '@/features/members/types'
 import { sessionMiddleware } from '@/lib/session-middleware'
+import z from 'zod'
+import { Workspace } from '../types'
 
 const app = new Hono()
   .get('/', sessionMiddleware, async (c) => {
@@ -182,5 +184,49 @@ const app = new Hono()
     )
     return c.json({ data: updatedWorkspace })
   })
+  .post(
+    '/:workspaceId/join',
+    sessionMiddleware,
+    zValidator('json', z.object({ inviteCode: z.string() })),
+    async (c) => {
+      const databases = c.get('databases')
+      const user = c.get('user')
+      const { workspaceId } = c.req.param()
+      const { inviteCode } = c.req.valid('json')
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      })
+      if (member) {
+        return c.json(
+          { error: 'You are already a member of this workspace' },
+          400,
+        )
+      }
+      const workspace = await databases.getDocument<Workspace>(
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+      )
+      if (!workspace) {
+        return c.json({ error: 'Workspace not found' }, 404)
+      }
+      if (workspace.inviteCode !== inviteCode) {
+        return c.json({ error: 'Invalid invite code' }, 400)
+      }
+      await databases.createDocument({
+        collectionId: MEMBER_ID,
+        databaseId: DATABASE_ID,
+        documentId: ID.unique(),
+        data: {
+          workspaceId,
+          userId: user.$id,
+          role: MemberRole.MEMBER,
+        },
+      })
+      return c.json({ data: { $id: workspaceId } })
+    },
+  )
 
 export default app
