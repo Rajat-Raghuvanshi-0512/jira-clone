@@ -1,8 +1,8 @@
-import SignInForm from "./SignInForm";
-import Link from "next/link";
-import { DottedSeparator } from "@/components/ui/dotted-separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AuthProviderButtons } from "./AuthProviderButtons";
+import SignInForm from './SignInForm'
+import Link from 'next/link'
+import { DottedSeparator } from '@/components/ui/dotted-separator'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AuthProviderButtons } from './AuthProviderButtons'
 
 export const SignInCard = () => {
   return (
@@ -27,12 +27,12 @@ export const SignInCard = () => {
       </div>
       <CardContent className="p-7">
         <p className="text-sm text-neutral-500">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <Link href="/sign-up" className="text-blue-600">
             Sign up
           </Link>
         </p>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

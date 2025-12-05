@@ -1,8 +1,8 @@
-import Link from "next/link";
-import Image from "next/image";
-import { UserButton } from "@/features/auth/components/UserButton";
+import Link from 'next/link'
+import Image from 'next/image'
+import { UserButton } from '@/features/auth/components/UserButton'
 interface StandaloneLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export default function StandaloneLayout({ children }: StandaloneLayoutProps) {
@@ -21,5 +21,5 @@ export default function StandaloneLayout({ children }: StandaloneLayoutProps) {
         </div>
       </div>
     </main>
-  );
+  )
 }

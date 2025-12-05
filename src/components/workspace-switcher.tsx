@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
-import { RiAddCircleFill } from "react-icons/ri";
+import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspaces'
+import { RiAddCircleFill } from 'react-icons/ri'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "./ui/select";
-import { useRouter } from "next/navigation";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar";
-import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
+} from './ui/select'
+import { useRouter } from 'next/navigation'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
+import { useCreateWorkspaceModal } from '@/features/workspaces/hooks/use-create-workspace-modal'
 
 export const WorkspaceSwitcher = () => {
-  const { data: workspaces, isLoading } = useGetWorkspaces();
-  const { open } = useCreateWorkspaceModal();
-  const router = useRouter();
-  const workspaceId = useWorkspaceId();
+  const { data: workspaces, isLoading } = useGetWorkspaces()
+  const { open } = useCreateWorkspaceModal()
+  const router = useRouter()
+  const workspaceId = useWorkspaceId()
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
   if (!workspaces) {
-    return <div>No workspaces found</div>;
+    return <div>No workspaces found</div>
   }
   const onSelect = (id: string) => {
-    router.push(`/workspaces/${id}`);
-  };
+    router.push(`/workspaces/${id}`)
+  }
   return (
     <div className="flex flex-col gap-y-2">
       <div className="flex items-center justify-between">
@@ -58,5 +58,5 @@ export const WorkspaceSwitcher = () => {
         </SelectContent>
       </Select>
     </div>
-  );
-};
+  )
+}

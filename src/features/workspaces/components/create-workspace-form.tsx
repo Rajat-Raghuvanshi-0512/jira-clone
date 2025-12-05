@@ -1,9 +1,9 @@
-"use client";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createWorkspaceSchema } from "../schema";
-import { useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+'use client'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createWorkspaceSchema } from '../schema'
+import { useForm } from 'react-hook-form'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
   FormField,
@@ -11,53 +11,53 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { DottedSeparator } from "@/components/ui/dotted-separator";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useCreateWorkspace } from "../api/use-create-workspace";
-import { useRef } from "react";
-import Image from "next/image";
-import { Avatar } from "@/components/ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import { DottedSeparator } from '@/components/ui/dotted-separator'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { useCreateWorkspace } from '../api/use-create-workspace'
+import { useRef } from 'react'
+import Image from 'next/image'
+import { Avatar } from '@/components/ui/avatar'
+import { AvatarFallback } from '@radix-ui/react-avatar'
+import { ImageIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface CreateWorkspaceFormProps {
-  onCancel?: () => void;
+  onCancel?: () => void
 }
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
-  const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter()
+  const inputRef = useRef<HTMLInputElement>(null)
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
-      name: "",
+      name: '',
     },
-  });
-  const { mutate: createWorkspace, isPending } = useCreateWorkspace();
+  })
+  const { mutate: createWorkspace, isPending } = useCreateWorkspace()
   const onSubmit = (data: z.infer<typeof createWorkspaceSchema>) => {
     const finalValues = {
       ...data,
-      image: data.image instanceof File ? data.image : "",
-    };
+      image: data.image instanceof File ? data.image : '',
+    }
     createWorkspace(
       { form: finalValues },
       {
         onSuccess: ({ data }) => {
-          form.reset();
-          router.push(`/workspaces/${data.$id}`);
+          form.reset()
+          router.push(`/workspaces/${data.$id}`)
         },
-      }
-    );
-  };
+      },
+    )
+  }
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      form.setValue("image", file);
+      form.setValue('image', file)
     }
-  };
+  }
 
   return (
     <Card className="w-full h-full border-none shadow-none">
@@ -132,9 +132,9 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                             size="xs"
                             className="w-fit mt-2"
                             onClick={() => {
-                              form.setValue("image", "");
+                              form.setValue('image', '')
                               if (inputRef.current) {
-                                inputRef.current.value = "";
+                                inputRef.current.value = ''
                               }
                             }}
                             disabled={isPending}
@@ -166,7 +166,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 type="button"
                 variant="secondary"
                 onClick={onCancel}
-                className={cn(onCancel ? "block" : "invisible")}
+                className={cn(onCancel ? 'block' : 'invisible')}
                 disabled={form.formState.isSubmitting || isPending}
               >
                 Cancel
@@ -184,5 +184,5 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
         </Form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

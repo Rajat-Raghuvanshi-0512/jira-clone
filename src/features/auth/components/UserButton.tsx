@@ -1,36 +1,36 @@
-'use client';
+'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useLogout } from '../api/use-logout';
-import { useCurrent } from '../api/use-current';
-import { DottedSeparator } from '@/components/ui/dotted-separator';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useLogout } from '../api/use-logout'
+import { useCurrent } from '../api/use-current'
+import { DottedSeparator } from '@/components/ui/dotted-separator'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuContent,
-} from '@/components/ui/dropdown-menu';
-import { Loader2, LogOut } from 'lucide-react';
+} from '@/components/ui/dropdown-menu'
+import { Loader2, LogOut } from 'lucide-react'
 
 export const UserButton = () => {
-  const { data: user, isLoading } = useCurrent();
-  const { mutate: logout } = useLogout();
+  const { data: user, isLoading } = useCurrent()
+  const { mutate: logout } = useLogout()
   if (isLoading) {
     return (
       <div className="size-10 rounded-full flex items-center justify-center bg-neutral-200 border border-neutral-300">
         <Loader2 className="size-4 animate-spin text-muted-foreground" />
       </div>
-    );
+    )
   }
 
   if (!user) {
-    return null;
+    return null
   }
 
-  const { name, email } = user;
+  const { name, email } = user
   const avatarFallback = name
     ? name?.charAt(0).toUpperCase()
-    : email?.charAt(0).toUpperCase() ?? 'U';
+    : (email?.charAt(0).toUpperCase() ?? 'U')
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative" asChild>
@@ -69,5 +69,5 @@ export const UserButton = () => {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}

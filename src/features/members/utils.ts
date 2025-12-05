@@ -1,10 +1,10 @@
-import { Query, type Databases } from "node-appwrite";
-import { MEMBER_ID, DATABASE_ID } from "@/config";
+import { Query, type Databases } from 'node-appwrite'
+import { MEMBER_ID, DATABASE_ID } from '@/config'
 
 interface GetMemberProps {
-  databases: Databases;
-  workspaceId: string;
-  userId: string;
+  databases: Databases
+  workspaceId: string
+  userId: string
 }
 export const getMember = async ({
   databases,
@@ -15,10 +15,10 @@ export const getMember = async ({
     databaseId: DATABASE_ID,
     collectionId: MEMBER_ID,
     queries: [
-      Query.equal("workspaceId", workspaceId),
-      Query.equal("userId", userId),
+      Query.equal('workspaceId', workspaceId),
+      Query.equal('userId', userId),
     ],
-  });
+  })
 
-  return member.documents[0];
-};
+  return member.documents[0]
+}

@@ -1,45 +1,45 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { JSX, useState } from "react";
-import { ResponsiveModal } from "@/components/responsive-modal";
+import { Button, buttonVariants } from '@/components/ui/button'
+import { JSX, useState } from 'react'
+import { ResponsiveModal } from '@/components/responsive-modal'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { VariantProps } from "class-variance-authority";
+} from '@/components/ui/card'
+import { VariantProps } from 'class-variance-authority'
 
 export const useConfirm = (
   title: string,
   description: string,
-  variant: VariantProps<typeof buttonVariants>["variant"] = "primary"
+  variant: VariantProps<typeof buttonVariants>['variant'] = 'primary',
 ): [() => JSX.Element, () => Promise<unknown>] => {
   const [promise, setPromise] = useState<{
-    resolve: (value: boolean) => void;
-  } | null>(null);
+    resolve: (value: boolean) => void
+  } | null>(null)
 
   const confirm = () => {
     return new Promise((resolve) => {
-      setPromise({ resolve });
-    });
-  };
+      setPromise({ resolve })
+    })
+  }
   const handleClose = () => {
-    setPromise(null);
-  };
+    setPromise(null)
+  }
   const handleConfirm = () => {
     if (promise) {
-      promise.resolve(true);
+      promise.resolve(true)
     }
-    handleClose();
-  };
+    handleClose()
+  }
 
   const handleCancel = () => {
     if (promise) {
-      promise.resolve(false);
+      promise.resolve(false)
     }
-    handleClose();
-  };
+    handleClose()
+  }
   const ConfirmationDialog = () => {
     return (
       <ResponsiveModal isOpen={promise !== null} onOpenChange={handleClose}>
@@ -68,7 +68,7 @@ export const useConfirm = (
           </CardContent>
         </Card>
       </ResponsiveModal>
-    );
-  };
-  return [ConfirmationDialog, confirm];
-};
+    )
+  }
+  return [ConfirmationDialog, confirm]
+}

@@ -1,9 +1,9 @@
-import React from "react";
-import Image from "next/image";
-import { RedirectAuthButton } from "@/features/auth/components/RedirectAuthButton";
+import React from 'react'
+import Image from 'next/image'
+import { RedirectAuthButton } from '@/features/auth/components/RedirectAuthButton'
 
 interface AuthLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
@@ -23,5 +23,5 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
       </div>
     </main>
-  );
+  )
 }

@@ -1,18 +1,18 @@
-'use client';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+'use client'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { signInSchema } from '../schema';
-import { useLogin } from '../api/use-login';
+} from '@/components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { signInSchema } from '../schema'
+import { useLogin } from '../api/use-login'
 
 const SignInForm = () => {
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -21,11 +21,11 @@ const SignInForm = () => {
       email: '',
       password: '',
     },
-  });
-  const { mutate: login, isPending } = useLogin();
+  })
+  const { mutate: login, isPending } = useLogin()
   const onSubmit = (data: z.infer<typeof signInSchema>) => {
-    login({ json: data });
-  };
+    login({ json: data })
+  }
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -71,7 +71,7 @@ const SignInForm = () => {
         </Button>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default SignInForm;
+export default SignInForm

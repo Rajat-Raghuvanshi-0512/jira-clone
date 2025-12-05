@@ -1,9 +1,9 @@
-"use client";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { updateWorkspaceSchema } from "../schema";
-import { useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+'use client'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { updateWorkspaceSchema } from '../schema'
+import { useForm } from 'react-hook-form'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
   FormField,
@@ -11,110 +11,110 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { DottedSeparator } from "@/components/ui/dotted-separator";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRef } from "react";
-import Image from "next/image";
-import { Avatar } from "@/components/ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useUpdateWorkspace } from "../api/use-update-workspace";
-import { Workspace } from "../types";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useDeleteWorkspace } from "../api/use-delete-workspace";
-import { toast } from "sonner";
-import { useResetInviteCode } from "../api/use-reset-invite-code";
+} from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import { DottedSeparator } from '@/components/ui/dotted-separator'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { useRef } from 'react'
+import Image from 'next/image'
+import { Avatar } from '@/components/ui/avatar'
+import { AvatarFallback } from '@radix-ui/react-avatar'
+import { ArrowLeftIcon, CopyIcon, ImageIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useUpdateWorkspace } from '../api/use-update-workspace'
+import { Workspace } from '../types'
+import { useConfirm } from '@/hooks/use-confirm'
+import { useDeleteWorkspace } from '../api/use-delete-workspace'
+import { toast } from 'sonner'
+import { useResetInviteCode } from '../api/use-reset-invite-code'
 
 interface EditWorkspaceFormProps {
-  onCancel?: () => void;
-  workspaceId: string;
-  initialValues: Workspace;
+  onCancel?: () => void
+  workspaceId: string
+  initialValues: Workspace
 }
 export const EditWorkspaceForm = ({
   onCancel,
   workspaceId,
   initialValues,
 }: EditWorkspaceFormProps) => {
-  const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter()
+  const inputRef = useRef<HTMLInputElement>(null)
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
       name: initialValues.name,
-      image: initialValues.image ?? "",
+      image: initialValues.image ?? '',
     },
-  });
+  })
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Workspace",
-    "Are you sure you want to delete this workspace? This action cannot be undone.",
-    "destructive"
-  );
+    'Delete Workspace',
+    'Are you sure you want to delete this workspace? This action cannot be undone.',
+    'destructive',
+  )
   const [ResetInviteCodeDialog, confirmResetInviteCode] = useConfirm(
-    "Reset Invite Code",
-    "Are you sure you want to reset the invite code? This will generate a new invite code.",
-    "destructive"
-  );
-  const { mutate: updateWorkspace, isPending } = useUpdateWorkspace();
+    'Reset Invite Code',
+    'Are you sure you want to reset the invite code? This will generate a new invite code.',
+    'destructive',
+  )
+  const { mutate: updateWorkspace, isPending } = useUpdateWorkspace()
   const { mutate: deleteWorkspace, isPending: isDeleting } =
-    useDeleteWorkspace();
+    useDeleteWorkspace()
   const { mutate: resetInviteCode, isPending: isResettingInviteCode } =
-    useResetInviteCode();
+    useResetInviteCode()
   const onSubmit = (data: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...data,
-      image: data.image instanceof File ? data.image : "",
-    };
+      image: data.image instanceof File ? data.image : '',
+    }
     updateWorkspace(
       { form: finalValues, param: { workspaceId } },
       {
         onSuccess: ({ data }) => {
-          form.reset();
-          router.push(`/workspaces/${data.$id}`);
+          form.reset()
+          router.push(`/workspaces/${data.$id}`)
         },
-      }
-    );
-  };
+      },
+    )
+  }
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      form.setValue("image", file);
+      form.setValue('image', file)
     }
-  };
+  }
   const handleDelete = async () => {
-    const ok = await confirmDelete();
+    const ok = await confirmDelete()
     if (!ok) {
-      return;
+      return
     }
     deleteWorkspace(
       { param: { workspaceId } },
       {
         onSuccess: () => {
-          router.push("/");
+          router.push('/')
         },
-      }
-    );
-  };
+      },
+    )
+  }
 
-  const fullInviteCode = `${window.location.origin}/workspaces/${workspaceId}/join/${initialValues.inviteCode}`;
+  const fullInviteCode = `${window.location.origin}/workspaces/${workspaceId}/join/${initialValues.inviteCode}`
 
   const handleResetInviteCode = async () => {
-    const ok = await confirmResetInviteCode();
+    const ok = await confirmResetInviteCode()
     if (!ok) {
-      return;
+      return
     }
     resetInviteCode(
       { param: { workspaceId } },
       {
         onSuccess: () => {
-          router.refresh();
+          router.refresh()
         },
-      }
-    );
-  };
+      },
+    )
+  }
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -201,9 +201,9 @@ export const EditWorkspaceForm = ({
                               size="xs"
                               className="w-fit mt-2"
                               onClick={() => {
-                                form.setValue("image", "");
+                                form.setValue('image', '')
                                 if (inputRef.current) {
-                                  inputRef.current.value = "";
+                                  inputRef.current.value = ''
                                 }
                               }}
                               disabled={isPending}
@@ -235,7 +235,7 @@ export const EditWorkspaceForm = ({
                   type="button"
                   variant="secondary"
                   onClick={onCancel}
-                  className={cn(onCancel ? "block" : "invisible")}
+                  className={cn(onCancel ? 'block' : 'invisible')}
                   disabled={form.formState.isSubmitting || isPending}
                 >
                   Cancel
@@ -269,8 +269,8 @@ export const EditWorkspaceForm = ({
                   variant="secondary"
                   className="size-12"
                   onClick={() => {
-                    navigator.clipboard.writeText(fullInviteCode);
-                    toast.success("Invite link copied to clipboard");
+                    navigator.clipboard.writeText(fullInviteCode)
+                    toast.success('Invite link copied to clipboard')
                   }}
                 >
                   <CopyIcon className="size-5" />
@@ -312,5 +312,5 @@ export const EditWorkspaceForm = ({
         </CardContent>
       </Card>
     </div>
-  );
-};
+  )
+}

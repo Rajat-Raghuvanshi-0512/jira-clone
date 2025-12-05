@@ -1,18 +1,18 @@
-'use client';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+'use client'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { signUpSchema } from '../schema';
-import { useRegister } from '../api/use-register';
+} from '@/components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { signUpSchema } from '../schema'
+import { useRegister } from '../api/use-register'
 
 const SignUpForm = () => {
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -22,11 +22,11 @@ const SignUpForm = () => {
       email: '',
       password: '',
     },
-  });
-  const { mutate: register, isPending } = useRegister();
+  })
+  const { mutate: register, isPending } = useRegister()
   const onSubmit = (data: z.infer<typeof signUpSchema>) => {
-    register({ json: data });
-  };
+    register({ json: data })
+  }
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -84,7 +84,7 @@ const SignUpForm = () => {
         </Button>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default SignUpForm;
+export default SignUpForm

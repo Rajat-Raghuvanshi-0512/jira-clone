@@ -1,10 +1,10 @@
-import { getCurrentUser } from "@/features/auth/queries";
-import { redirect } from "next/navigation";
+import { getCurrentUser } from '@/features/auth/queries'
+import { redirect } from 'next/navigation'
 
 export default async function WorkspacePage() {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
   if (!user) {
-    return redirect("/sign-in");
+    return redirect('/sign-in')
   }
-  return <div>WorkspacePage</div>;
+  return <div>WorkspacePage</div>
 }

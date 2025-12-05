@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const signInSchema = z.object({
   email: z.email().trim().min(1, { message: 'Email is required' }),
@@ -7,7 +7,7 @@ export const signInSchema = z.object({
     .min(1, { message: 'Password is required' })
     .min(8, { message: 'Password must be at least 8 characters' })
     .max(20, { message: 'Password must be at most 20 characters' }),
-});
+})
 
 export const signUpSchema = z.object({
   name: z.string().trim().min(1, { message: 'Name is required' }),
@@ -17,4 +17,4 @@ export const signUpSchema = z.object({
     .min(1, { message: 'Password is required' })
     .min(8)
     .max(20, { message: 'Password must be at most 20 characters' }),
-});
+})

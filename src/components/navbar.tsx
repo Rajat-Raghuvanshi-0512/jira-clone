@@ -1,5 +1,5 @@
-import { UserButton } from "@/features/auth/components/UserButton";
-import { MobileSidebar } from "./mobile-sidebar";
+import { UserButton } from '@/features/auth/components/UserButton'
+import { MobileSidebar } from './mobile-sidebar'
 
 export const Navbar = () => {
   return (
@@ -13,5 +13,5 @@ export const Navbar = () => {
       <MobileSidebar />
       <UserButton />
     </nav>
-  );
-};
+  )
+}

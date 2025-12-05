@@ -1,13 +1,13 @@
-"use client";
-import { ResponsiveModal } from "@/components/responsive-modal";
-import { CreateWorkspaceForm } from "./create-workspace-form";
-import { useCreateWorkspaceModal } from "../hooks/use-create-workspace-modal";
+'use client'
+import { ResponsiveModal } from '@/components/responsive-modal'
+import { CreateWorkspaceForm } from './create-workspace-form'
+import { useCreateWorkspaceModal } from '../hooks/use-create-workspace-modal'
 
 export const CreateWorkspaceModal = () => {
-  const { isOpen, setIsOpen, close } = useCreateWorkspaceModal();
+  const { isOpen, setIsOpen, close } = useCreateWorkspaceModal()
   return (
     <ResponsiveModal isOpen={isOpen} onOpenChange={setIsOpen}>
       <CreateWorkspaceForm onCancel={close} />
     </ResponsiveModal>
-  );
-};
+  )
+}
