@@ -1,7 +1,7 @@
 import { useMedia } from 'react-use'
-import { Dialog, DialogContent } from './ui/dialog'
 
 import { Drawer, DrawerContent } from './ui/drawer'
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 
 interface ResponsiveModalProps {
   isOpen: boolean
@@ -19,6 +19,7 @@ export const ResponsiveModal = ({
   if (isDesktop) {
     return (
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogTitle className="sr-only">Create Project</DialogTitle>
         <DialogContent className="w-full sm:max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]">
           {children}
         </DialogContent>

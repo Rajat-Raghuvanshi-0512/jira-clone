@@ -121,6 +121,9 @@
   }
 }
 
+body {
+  height: 100%;
+}
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
