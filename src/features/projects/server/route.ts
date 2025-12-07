@@ -6,7 +6,12 @@ import { createProjectSchema, updateProjectSchema } from '../schema'
 import { zValidator } from '@hono/zod-validator'
 import { getMember } from '@/features/members/utils'
 import { sessionMiddleware } from '@/lib/session-middleware'
-import { DATABASE_ID, IMAGE_BUCKET_ID, PROJECT_ID, STATUS_ID } from '@/config'
+import {
+  DATABASE_ID,
+  IMAGE_BUCKET_ID,
+  PROJECT_ID,
+  TASK_STATUS_ID,
+} from '@/config'
 
 const app = new Hono()
   .get(
@@ -37,6 +42,16 @@ const app = new Hono()
       return c.json({ data: projects })
     },
   )
+  .get('/:projectId/statuses', sessionMiddleware, async (c) => {
+    const databases = c.get('databases')
+    const { projectId } = c.req.param()
+    const statuses = await databases.listDocuments({
+      collectionId: TASK_STATUS_ID,
+      databaseId: DATABASE_ID,
+      queries: [Query.equal('projectId', projectId)],
+    })
+    return c.json({ data: statuses })
+  })
   .post(
     '/',
     sessionMiddleware,
@@ -85,34 +100,33 @@ const app = new Hono()
           imageUrl: uploadedImageUrl,
         },
       })
-      await databases.createDocuments({
-        collectionId: STATUS_ID,
+      await databases.createDocument({
+        collectionId: TASK_STATUS_ID,
         databaseId: DATABASE_ID,
-        documents: [
-          {
-            documentId: ID.unique(),
-            data: {
-              name: 'To Do',
-              projectId: project.$id,
-            },
-          },
-          {
-            documentId: ID.unique(),
-            data: {
-              name: 'In Progress',
-              projectId: project.$id,
-            },
-          },
-          {
-            documentId: ID.unique(),
-            data: {
-              name: 'Done',
-              projectId: project.$id,
-            },
-          },
-        ],
+        documentId: ID.unique(),
+        data: {
+          name: 'To Do',
+          projectId: project.$id,
+        },
       })
-
+      await databases.createDocument({
+        collectionId: TASK_STATUS_ID,
+        databaseId: DATABASE_ID,
+        documentId: ID.unique(),
+        data: {
+          name: 'In Progress',
+          projectId: project.$id,
+        },
+      })
+      await databases.createDocument({
+        collectionId: TASK_STATUS_ID,
+        databaseId: DATABASE_ID,
+        documentId: ID.unique(),
+        data: {
+          name: 'Done',
+          projectId: project.$id,
+        },
+      })
       return c.json({ data: project })
     },
   )

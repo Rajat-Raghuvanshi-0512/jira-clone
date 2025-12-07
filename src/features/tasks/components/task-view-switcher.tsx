@@ -1,9 +1,12 @@
+'use client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import { DottedSeparator } from '@/components/ui/dotted-separator'
+import { useCreateTaskModal } from '../hooks/use-create-task-modal'
 
 export const TaskViewSwitcher = () => {
+  const { open } = useCreateTaskModal()
   return (
     <Tabs className="w-full flex-1 rounded-lg" defaultValue="table">
       <div className="flex flex-col overflow-auto h-full p-4">
@@ -19,7 +22,12 @@ export const TaskViewSwitcher = () => {
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button variant="secondary" size="sm" className="w-full lg:w-auto">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full lg:w-auto"
+            onClick={open}
+          >
             <PlusIcon className="size-4 mr-2" />
             Add Task
           </Button>
