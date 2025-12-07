@@ -13,20 +13,19 @@ import { useRouter } from 'next/navigation'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
 import { useCreateWorkspaceModal } from '@/features/workspaces/hooks/use-create-workspace-modal'
+import { WorkspaceSwitcherSkeleton } from './skeletons'
 
 export const WorkspaceSwitcher = () => {
   const { data: workspaces, isLoading } = useGetWorkspaces()
   const { open } = useCreateWorkspaceModal()
   const router = useRouter()
   const workspaceId = useWorkspaceId()
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-  if (!workspaces) {
-    return <div>No workspaces found</div>
-  }
+
   const onSelect = (id: string) => {
     router.push(`/workspaces/${id}`)
+  }
+  if (isLoading) {
+    return <WorkspaceSwitcherSkeleton />
   }
   return (
     <div className="flex flex-col gap-y-2">
@@ -44,7 +43,7 @@ export const WorkspaceSwitcher = () => {
           <SelectValue placeholder="Select a workspace" />
         </SelectTrigger>
         <SelectContent>
-          {workspaces.documents.map((workspace) => (
+          {workspaces?.documents.map((workspace) => (
             <SelectItem key={workspace.$id} value={workspace.$id}>
               <div className="flex items-center gap-3 justify-start font-medium">
                 <WorkspaceAvatar

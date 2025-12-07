@@ -7,6 +7,7 @@ import { useGetProjects } from '@/features/projects/api/use-get-projects'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { useCreateProjectModal } from '@/features/projects/hooks/use-create-project-modal'
 import { ProjectAvatar } from '@/features/projects/components/project-avatar'
+import { ProjectsSkeleton } from './skeletons'
 
 export const Projects = () => {
   const workspaceId = useWorkspaceId()
@@ -14,10 +15,7 @@ export const Projects = () => {
   const { open: openCreateProjectModal } = useCreateProjectModal()
   const { data: projects, isLoading } = useGetProjects({ workspaceId })
   if (isLoading) {
-    return <div>Loading...</div>
-  }
-  if (!projects) {
-    return <div>No projects found</div>
+    return <ProjectsSkeleton />
   }
   return (
     <div className="flex flex-col gap-y-2">
