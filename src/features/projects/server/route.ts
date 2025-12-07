@@ -6,7 +6,7 @@ import { createProjectSchema, updateProjectSchema } from '../schema'
 import { zValidator } from '@hono/zod-validator'
 import { getMember } from '@/features/members/utils'
 import { sessionMiddleware } from '@/lib/session-middleware'
-import { DATABASE_ID, IMAGE_BUCKET_ID, PROJECT_ID } from '@/config'
+import { DATABASE_ID, IMAGE_BUCKET_ID, PROJECT_ID, STATUS_ID } from '@/config'
 
 const app = new Hono()
   .get(
@@ -84,6 +84,33 @@ const app = new Hono()
           workspaceId,
           imageUrl: uploadedImageUrl,
         },
+      })
+      await databases.createDocuments({
+        collectionId: STATUS_ID,
+        databaseId: DATABASE_ID,
+        documents: [
+          {
+            documentId: ID.unique(),
+            data: {
+              name: 'To Do',
+              projectId: project.$id,
+            },
+          },
+          {
+            documentId: ID.unique(),
+            data: {
+              name: 'In Progress',
+              projectId: project.$id,
+            },
+          },
+          {
+            documentId: ID.unique(),
+            data: {
+              name: 'Done',
+              projectId: project.$id,
+            },
+          },
+        ],
       })
 
       return c.json({ data: project })

@@ -1,10 +1,11 @@
+import Link from 'next/link'
 import { PencilIcon } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/features/auth/queries'
 import { getProject } from '@/features/projects/queries'
 import { ProjectAvatar } from '@/features/projects/components/project-avatar'
-import Link from 'next/link'
+import { TaskViewSwitcher } from '@/features/tasks/components/task-view-switcher'
 
 interface ProjectPageProps {
   params: Promise<{ workspaceId: string; projectId: string }>
@@ -42,6 +43,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </Button>
         </div>
       </div>
+      <TaskViewSwitcher />
     </div>
   )
 }
