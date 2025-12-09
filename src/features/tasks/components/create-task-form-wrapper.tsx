@@ -1,5 +1,6 @@
 'use client'
 import { CreateTaskForm } from './create-task-form'
+import { CreateTaskFormSkeleton } from '@/components/skeletons'
 import { useGetMembers } from '@/features/members/api/use-get-members'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { useGetStatuses } from '@/features/projects/api/use-get-statuses'
@@ -34,7 +35,7 @@ export const CreateTaskFormWrapper = ({
     })) ?? []
 
   if (isLoadingMembers || isLoadingStatuses) {
-    return <div>Loading...</div>
+    return <CreateTaskFormSkeleton />
   }
 
   return (

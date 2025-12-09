@@ -8,6 +8,7 @@ import { sessionMiddleware } from '@/lib/session-middleware'
 import { createAdminClient } from '@/lib/appwrite'
 import { Project } from '@/features/projects/types'
 import { TASK_ID, DATABASE_ID, PROJECT_ID, MEMBER_ID } from '@/config'
+import { Task } from '../types'
 
 const app = new Hono()
   .get(
@@ -17,10 +18,10 @@ const app = new Hono()
       'query',
       z.object({
         workspaceId: z.string(),
-        statusId: z.string(),
+        statusId: z.string().optional(),
         projectId: z.string().optional(),
         search: z.string().optional(),
-        dueDate: z.date().optional(),
+        dueDate: z.string().optional(),
         assigneeId: z.string().optional(),
       }),
     ),
@@ -30,7 +31,14 @@ const app = new Hono()
       const user = c.get('user')
       const { projectId, workspaceId, statusId, search, dueDate, assigneeId } =
         c.req.valid('query')
-
+      console.log({
+        projectId,
+        workspaceId,
+        statusId,
+        search,
+        dueDate,
+        assigneeId,
+      })
       const member = await getMember({
         databases,
         workspaceId,
@@ -50,31 +58,54 @@ const app = new Hono()
         queries.push(Query.equal('statusId', statusId))
       }
       if (search) queries.push(Query.search('name', search))
-      if (dueDate) queries.push(Query.equal('dueDate', dueDate.toISOString()))
+      if (dueDate) queries.push(Query.equal('dueDate', dueDate))
       if (assigneeId) queries.push(Query.equal('assigneeId', assigneeId))
-      const tasks = await databases.listDocuments({
+
+      console.log('queries', queries)
+      const tasks = await databases.listDocuments<Task>({
         collectionId: TASK_ID,
         databaseId: DATABASE_ID,
         queries,
       })
-      const projectIds = tasks.documents.map((task) => task.projectId)
-      const assigneeIds = tasks.documents.map((task) => task.assigneeId)
+      const projectIds = [
+        ...new Set(
+          tasks.documents
+            .map((task) => task.projectId)
+            .filter((id) => Boolean(id)),
+        ),
+      ]
+      const assigneeIds = [
+        ...new Set(
+          tasks.documents
+            .map((task) => task.assigneeId)
+            .filter((id) => Boolean(id)),
+        ),
+      ]
 
+      // Fetch projects by workspace and filter by projectIds
       const projects = await databases.listDocuments<Project>({
         collectionId: PROJECT_ID,
         databaseId: DATABASE_ID,
-        queries:
-          projectIds.length > 0 ? [Query.contains('$id', projectIds)] : [],
+        queries: [Query.equal('workspaceId', workspaceId)],
       })
+
+      // Fetch members by workspace and filter by assigneeIds
       const members = await databases.listDocuments({
         collectionId: MEMBER_ID,
         databaseId: DATABASE_ID,
-        queries:
-          assigneeIds.length > 0 ? [Query.contains('$id', assigneeIds)] : [],
+        queries: [Query.equal('workspaceId', workspaceId)],
       })
 
+      // Filter projects and members to only include those referenced by tasks
+      const filteredProjects = projects.documents.filter((project) =>
+        projectIds.includes(project.$id),
+      )
+      const filteredMembers = members.documents.filter((member) =>
+        assigneeIds.includes(member.$id),
+      )
+
       const assignees = await Promise.all(
-        members.documents.map(async (member) => {
+        filteredMembers.map(async (member) => {
           const user = await users.get(member.userId)
           return {
             ...member,
@@ -83,8 +114,9 @@ const app = new Hono()
           }
         }),
       )
+
       const populatedTasks = tasks.documents.map((task) => {
-        const project = projects.documents.find(
+        const project = filteredProjects.find(
           (project) => project.$id === task.projectId,
         )
         const assignee = assignees.find(

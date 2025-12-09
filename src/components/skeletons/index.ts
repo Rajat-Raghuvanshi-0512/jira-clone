@@ -4,4 +4,5 @@ export { InviteMembersSkeleton } from './invite-members-skeleton'
 export { MembersListSkeleton } from './members-list-skeleton'
 export { WorkspaceSwitcherSkeleton } from './workspace-switcher-skeleton'
 export { ProjectsSkeleton } from './projects-skeleton'
-
+export { CreateTaskFormSkeleton } from './create-task-form-skeleton'
+export { TaskViewSwitcherSkeleton } from './task-view-switcher-skeleton'
