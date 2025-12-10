@@ -9,7 +9,7 @@ import { Calendar } from './calendar'
 
 interface DatePickerProps {
   value?: Date
-  onChange: (date: Date) => void
+  onChange: (date: Date | undefined) => void
   placeholder?: string
   className?: string
 }
@@ -35,13 +35,21 @@ export const DatePicker = ({
           {value ? format(value, 'PPP') : placeholder}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0 flex flex-col">
         <Calendar
           autoFocus
           mode="single"
           selected={value}
           onSelect={(date) => onChange(date as Date)}
         />
+        <Button
+          variant="outline"
+          size="sm"
+          className="px-3 w-fit ml-auto mr-2 mb-2"
+          onClick={() => onChange(undefined)}
+        >
+          Clear
+        </Button>
       </PopoverContent>
     </Popover>
   )

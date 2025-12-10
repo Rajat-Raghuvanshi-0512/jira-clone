@@ -55,8 +55,8 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     }
   }
 
-  const onDueDateChange = (value: string) => {
-    if (value === 'all') {
+  const onDueDateChange = (value?: string) => {
+    if (!value) {
       setFilters({ dueDate: null })
     } else {
       setFilters({ dueDate: value })
@@ -113,16 +113,15 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
       >
         <SelectTrigger className="w-full lg:w-auto h-8">
           <div className="flex items-center pr-2">
-            <ListCheckIcon className="size-4 mr-2" />
+            <UserIcon className="size-4 mr-2" />
             <SelectValue placeholder="All Assignees" />
           </div>
         </SelectTrigger>
         <SelectContent>
-          <UserIcon className="size-4 mr-2" />
           <SelectItem value="all">All Assignees</SelectItem>
           <SelectSeparator />
           {memberOptions.map((member) => (
-            <SelectItem key={member.id} value={member.name}>
+            <SelectItem key={member.id} value={member.id}>
               {member.name}
             </SelectItem>
           ))}
@@ -131,7 +130,7 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
       <DatePicker
         value={dueDate ? new Date(dueDate) : undefined}
         onChange={(value) => {
-          onDueDateChange(value.toISOString())
+          onDueDateChange(value?.toISOString())
         }}
         className="w-full lg:w-auto"
       />
